@@ -1,17 +1,48 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>A simple Application to Convert Kenyan Counties and Sub Counties Json Structure into the Required Json Structure</h1>
+    <button @click="convertFormat()">Convert Now</button>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+import kenyanCounties from '@/kenyan_counties.json'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    // HelloWorld
+  },
+  data() {
+    return {
+      originalJson: [],
+      newJson: []
+    }
+  },
+  methods: {
+    convertFormat () {
+      this.originalJson = JSON.parse(JSON.stringify(kenyanCounties))
+      this.originalJson.forEach((x, i) => {
+        this.newJson.push(
+          {
+            state: {
+              name: x.name,
+              id: x.code,
+              locals: []
+            }
+          },
+        )
+        x.sub_counties.forEach((y, ii) => {
+          this.newJson[i].state.locals.push(
+            {
+              name: y,
+              id: ii + 1
+            }
+          )
+        })
+      })
+    }
   }
 }
 </script>
